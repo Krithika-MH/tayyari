@@ -23,6 +23,7 @@ import {
   StatusChip,
   useToast,
 } from "@/components/ui/primitives";
+import { PageGuide } from "@/components/ui/PageGuide";
 import type { TaskRecord, TaskStatus } from "@/lib/contracts";
 import { addDaysToISODate } from "@/lib/domain/budget";
 import { tr } from "@/lib/i18n";
@@ -410,9 +411,20 @@ export default function PlanPage() {
     <div className="space-y-6">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
-          <h1 className="font-display text-2xl sm:text-3xl font-bold text-ink marigold-underline">
-            Event Plan &amp; Guest List
-          </h1>
+          <div className="flex flex-wrap items-center gap-2">
+            <h1 className="font-display text-2xl sm:text-3xl font-bold text-ink marigold-underline">
+              Event Plan &amp; Guest List
+            </h1>
+            <PageGuide
+              title="Plan & Guest List"
+              summary="Keep everyone aligned on who owns each task, when it is due, and how many confirmed guests need catering."
+              steps={[
+                "Switch between 'All', 'My tasks', and 'Overdue' to filter your timeline.",
+                "Assigned helpers can Accept, Complete, or Decline tasks without seeing rupee budgets.",
+                "Use 'Guest List & RSVP' to track confirmed headcounts before finalizing caterer plates.",
+              ]}
+            />
+          </div>
           <p className="mt-2 text-sm text-ink-muted">
             Event date: <strong className="text-ink tabular-nums">{event.event_date}</strong> · Planned guests:{" "}
             <strong className="text-ink tabular-nums">{event.guest_count}</strong>

@@ -33,6 +33,7 @@ import {
   StatusChip,
   useToast,
 } from "@/components/ui/primitives";
+import { PageGuide } from "@/components/ui/PageGuide";
 
 const RECIPIENT_LABELS: Record<MessageRecipientType, string> = {
   vendor: "Vendor",
@@ -282,9 +283,21 @@ export default function MessagesPage() {
     <div className="space-y-8">
       <div className="no-print flex flex-wrap items-center justify-between gap-3">
         <div>
-          <h1 className="font-display text-2xl font-bold text-ink marigold-underline">
-            Messages &amp; Run Sheet
-          </h1>
+          <div className="flex flex-wrap items-center gap-2">
+            <h1 className="font-display text-2xl font-bold text-ink marigold-underline">
+              Messages &amp; Run Sheet
+            </h1>
+            <PageGuide
+              title="Messages & Run Sheet"
+              summary="Draft polite updates in Kannada, Hindi, or English with Sarvam AI, listen aloud, and share a money-free run sheet."
+              steps={[
+                "Pick recipient type (Vendor, Relative, Helper, NGO), purpose, and language to generate an editable draft.",
+                "Edit the text, press 'Listen' for Sarvam TTS playback, or click 'Open in WhatsApp' to send it yourself.",
+                "Copy the public Run Sheet link or print the event-day schedule — zero rupee amounts are included.",
+              ]}
+              note="Messages are always marked 'Prepared' until you personally send them in WhatsApp."
+            />
+          </div>
           <p className="mt-2 text-sm text-ink-muted">
             Prepare polite Kannada, Hindi, or English messages for WhatsApp and
             share a clean, money-free event-day run sheet.

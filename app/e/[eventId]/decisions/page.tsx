@@ -35,6 +35,7 @@ import {
   Skeleton,
   StatusChip,
 } from "@/components/ui/primitives";
+import { PageGuide } from "@/components/ui/PageGuide";
 
 type WizardStep = 1 | 2 | 3;
 
@@ -448,9 +449,21 @@ export default function DecisionsPage() {
       {/* Header */}
       <div className="flex flex-wrap items-start justify-between gap-4">
         <div>
-          <h1 className="marigold-underline font-display text-2xl font-bold text-ink sm:text-3xl">
-            {tr(lang, "navDecisions")}
-          </h1>
+          <div className="flex flex-wrap items-center gap-2">
+            <h1 className="marigold-underline font-display text-2xl font-bold text-ink sm:text-3xl">
+              {tr(lang, "navDecisions")}
+            </h1>
+            <PageGuide
+              title="Decisions & Voice Requests"
+              summary="Turn a Kannada, Hindi, or English voice note into a reviewed budget proposal with real NudgeBee human approval."
+              steps={[
+                "Record up to 25s or type your request, then edit the transcript and click 'Looks right'.",
+                "Confirm the matched expense, decision owner, and follow-up owner while previewing exact rupee impact.",
+                "Send to NudgeBee for approval. Once family-approved, record the vendor's real response separately.",
+              ]}
+              note="The baseline budget never changes until NudgeBee confirms approval."
+            />
+          </div>
           <p className="mt-2 max-w-2xl text-sm text-ink-muted">
             Speak or type a plan change in Kannada, Hindi, or English. Nothing
             changes in your budget until the family approves it in NudgeBee and

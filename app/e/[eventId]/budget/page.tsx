@@ -20,6 +20,7 @@ import {
   StatusChip,
   useToast,
 } from "@/components/ui/primitives";
+import { PageGuide } from "@/components/ui/PageGuide";
 import {
   EXPENSE_SOURCES,
   EXPENSE_STATUSES,
@@ -226,9 +227,21 @@ export default function BudgetPage() {
     <div className="space-y-6">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
-          <h1 className="font-display text-2xl sm:text-3xl font-bold text-ink marigold-underline">
-            Budget &amp; Expenses
-          </h1>
+          <div className="flex flex-wrap items-center gap-2">
+            <h1 className="font-display text-2xl sm:text-3xl font-bold text-ink marigold-underline">
+              Budget &amp; Expenses
+            </h1>
+            <PageGuide
+              title="Budget & Expenses"
+              summary="See exact category allocations, committed quotes, paid amounts, and any pending decisions — computed deterministically."
+              steps={[
+                "Watch category bars: amber means 85%+ committed, red means over category allocation.",
+                "Add expenses with a real quote or leave price blank for 'price unknown' (never counted as ₹0).",
+                "Pending changes show under 'If pending decisions go ahead' without changing your baseline.",
+              ]}
+              note="Only Organizers and Decision Owners can view or edit rupee amounts."
+            />
+          </div>
           <p className="mt-2 text-sm text-ink-muted tabular-nums">
             Total event budget:{" "}
             <strong className="text-ink">{formatINR(totalBudget)}</strong>

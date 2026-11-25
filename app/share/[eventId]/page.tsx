@@ -1,6 +1,7 @@
 import React from "react";
 import { CalendarDays, MapPin, Users } from "lucide-react";
 import { getRepository } from "@/lib/db/repository";
+import { PageGuide } from "@/components/ui/PageGuide";
 
 export const dynamic = "force-dynamic";
 
@@ -96,9 +97,20 @@ export default async function ShareRunSheetPage({
             </span>
           </div>
 
-          <h1 className="mt-3 font-display text-3xl font-bold text-ink">
-            {event.name}
-          </h1>
+          <div className="mt-3 flex flex-wrap items-center gap-2">
+            <h1 className="font-display text-3xl font-bold text-ink">
+              {event.name}
+            </h1>
+            <PageGuide
+              title="Shared Run Sheet"
+              summary="A clean, read-only event schedule for helpers, vendors, and relatives — completely free of budget numbers."
+              steps={[
+                "Follow tasks chronologically by date, time, and location.",
+                "Check the listed shortlisted vendors at the bottom for coordination contacts.",
+                "Print this page cleanly from your browser if you want a paper copy on event day.",
+              ]}
+            />
+          </div>
 
           <div className="mt-4 flex flex-wrap gap-5 text-sm text-ink-muted">
             <span className="inline-flex items-center gap-1.5">

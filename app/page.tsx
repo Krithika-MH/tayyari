@@ -2,14 +2,20 @@
 
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 import {
   ArrowLeft,
   ArrowRight,
+  Bot,
   Check,
   Copy,
+  HeartHandshake,
+  IndianRupee,
+  Mic,
   Plus,
   ShieldCheck,
   Sparkles,
+  Store,
   Trash2,
   Users,
 } from "lucide-react";
@@ -19,8 +25,10 @@ import {
   Card,
   EventIllustration,
   PlanBadge,
+  ProgressRing,
   StatusChip,
 } from "@/components/ui/primitives";
+import { PageGuide } from "@/components/ui/PageGuide";
 import {
   EVENT_TYPES,
   LANGUAGES,
@@ -358,41 +366,215 @@ export default function LandingPage() {
 
   return (
     <div className="min-h-screen bg-bg text-ink">
-      {/* Warm Kolam Hero Header */}
-      <header className="kolam-pattern border-b border-border bg-surface/80">
-        <div className="mx-auto max-w-[1040px] px-4 py-8 sm:py-10 flex flex-col gap-6 sm:flex-row sm:items-center sm:justify-between">
-          <div className="space-y-2 max-w-xl">
-            <div className="inline-flex items-center gap-2 rounded-full border border-border bg-bg px-3 py-1 text-xs font-semibold text-primary">
-              <Sparkles className="h-3.5 w-3.5 text-accent" aria-hidden="true" />
-              <span>Tayyari · Calm family event planning</span>
+      {/* Top Navbar */}
+      <nav className="sticky top-0 z-30 border-b border-border bg-surface/90 backdrop-blur">
+        <div className="mx-auto flex max-w-[1120px] items-center justify-between gap-3 px-4 py-3">
+          <div className="flex items-center gap-2.5">
+            <div className="flex h-9 w-9 items-center justify-center rounded-control bg-primary text-white font-display font-bold text-lg shadow-sm">
+              त
             </div>
-            <h1 className="font-display text-3xl sm:text-4xl font-bold text-ink tracking-tight">
-              Plan your family celebration without spreadsheet chaos.
-            </h1>
-            <p className="text-base text-ink-muted">
-              One shared room for budget clarity, tasks, voice change requests in
-              English, Kannada, or Hindi, and respectful role privacy.
-            </p>
+            <div>
+              <div className="font-display text-lg font-bold leading-none text-ink">
+                Tayyari
+              </div>
+              <div className="text-[11px] text-ink-muted">
+                Family event planning
+              </div>
+            </div>
           </div>
 
-          <div className="flex flex-col gap-2 shrink-0">
+          <div className="hidden sm:flex items-center gap-6 text-sm font-medium text-ink-muted">
+            <a href="#how-it-works" className="hover:text-primary transition-colors">
+              How it works
+            </a>
+            <a href="#create-event" className="hover:text-primary transition-colors">
+              Start planning
+            </a>
+            <Link href="/status" className="hover:text-primary transition-colors">
+              Integration status
+            </Link>
+          </div>
+
+          <div className="flex items-center gap-2">
+            <PageGuide
+              title="Tayyari Setup & Demo"
+              summary="Start a brand-new family event room in 4 short steps, or load the seeded Bengaluru engagement to explore every screen immediately."
+              steps={[
+                "Click 'Load demo event' to open the pre-filled Ananya & Rohan Engagement right away.",
+                "Or follow Steps 1–4 below to pick your event type, date, editable rupee budget, and family member roles.",
+                "Share each person's private link — Helpers and Viewers never see rupee totals.",
+              ]}
+              note="Zero account password required. Every family member enters via their own unique link."
+              align="right"
+            />
             <Button
-              variant="accent"
+              variant="primary"
+              size="sm"
               loading={seeding}
               onClick={handleLoadDemo}
-              className="w-full sm:w-auto"
+              className="min-h-[40px]"
             >
               <Sparkles className="h-4 w-4" aria-hidden="true" />
-              <span>Load demo event (Ananya &amp; Rohan)</span>
+              <span className="hidden xs:inline">Try Demo</span>
+              <span className="xs:hidden">Demo</span>
             </Button>
-            <span className="text-xs text-ink-muted text-center">
-              Instant walkthrough with seeded Bengaluru engagement
-            </span>
+          </div>
+        </div>
+      </nav>
+
+      {/* Warm Kolam Hero Header */}
+      <header className="kolam-pattern border-b border-border bg-gradient-to-b from-surface/90 to-bg">
+        <div className="mx-auto max-w-[1120px] px-4 py-10 sm:py-14 grid grid-cols-1 gap-8 lg:grid-cols-12 lg:items-center">
+          <div className="space-y-5 lg:col-span-7">
+            <div className="inline-flex flex-wrap items-center gap-2 rounded-full border border-border bg-surface px-3.5 py-1.5 text-xs font-semibold text-primary shadow-sm">
+              <Sparkles className="h-3.5 w-3.5 text-accent" aria-hidden="true" />
+              <span>Run your own event like you hired a planner, for the price of a small pass.</span>
+            </div>
+
+            <h1 className="font-display text-3xl sm:text-5xl font-bold text-ink tracking-tight leading-[1.12]">
+              Calm, transparent family event planning — without spreadsheet chaos.
+            </h1>
+
+            <p className="text-base sm:text-lg text-ink-muted max-w-xl leading-relaxed">
+              One shared room for deterministic rupee budgets, venue-matched
+              vendors, Kannada/Hindi/English voice requests, real NudgeBee
+              family approvals, and surplus food outreach.
+            </p>
+
+            <div className="flex flex-wrap items-center gap-3 pt-1">
+              <Button
+                variant="accent"
+                loading={seeding}
+                onClick={handleLoadDemo}
+                className="w-full sm:w-auto"
+              >
+                <Sparkles className="h-4 w-4" aria-hidden="true" />
+                <span>Load demo event (Ananya &amp; Rohan)</span>
+              </Button>
+              <a
+                href="#create-event"
+                className="inline-flex min-h-[48px] w-full sm:w-auto items-center justify-center gap-2 rounded-control border border-border bg-surface px-5 text-base font-semibold text-ink shadow-sm transition-colors hover:bg-surface-2"
+              >
+                <span>Create your own event</span>
+                <ArrowRight className="h-4 w-4" aria-hidden="true" />
+              </a>
+            </div>
+
+            <div className="flex flex-wrap items-center gap-2 pt-2 text-xs text-ink-muted">
+              <span className="font-semibold text-ink">Powered by:</span>
+              <StatusChip label="Sarvam AI Voice & LLM" tone="info" icon={<Mic className="h-3.5 w-3.5" />} />
+              <StatusChip label="NudgeBee Human Approvals" tone="accent" icon={<ShieldCheck className="h-3.5 w-3.5" />} />
+              <StatusChip label="Flagsmith Live Config" tone="success" icon={<Sparkles className="h-3.5 w-3.5" />} />
+            </div>
+          </div>
+
+          {/* Interactive Preview Card */}
+          <div className="lg:col-span-5">
+            <Card className="bg-gradient-to-br from-surface via-surface to-surface-2/70 space-y-4 border-border/90">
+              <div className="flex items-center justify-between gap-2">
+                <div>
+                  <div className="text-[11px] font-bold uppercase tracking-wider text-primary">
+                    Live preview · Bengaluru Engagement
+                  </div>
+                  <div className="font-display text-lg font-bold text-ink">
+                    Ananya &amp; Rohan
+                  </div>
+                </div>
+                <PlanBadge plan="free" />
+              </div>
+
+              <div className="flex items-center gap-4 rounded-control border border-border bg-bg/70 p-3.5">
+                <ProgressRing value={108000} max={120000} size={82} strokeWidth={8} label="committed" />
+                <div className="space-y-1 text-xs">
+                  <div className="text-ink-muted">Budget: <strong className="text-ink tabular-nums">₹1,20,000</strong></div>
+                  <div className="text-ink-muted">Committed: <strong className="text-ink tabular-nums">₹1,08,000</strong></div>
+                  <div className="text-success font-semibold tabular-nums">Remaining: ₹12,000</div>
+                </div>
+              </div>
+
+              <div className="rounded-control border border-amber-200 bg-amber-50/80 p-3.5 space-y-1.5">
+                <div className="flex items-center justify-between gap-2">
+                  <span className="text-xs font-bold text-ink">Voice Change Request</span>
+                  <StatusChip label="Family approved" tone="success" />
+                </div>
+                <p className="text-xs text-ink-muted indic-leading">
+                  &ldquo;Catering plates 150 → 200&rdquo; · <strong className="text-danger tabular-nums">+₹17,500</strong> (₹5,500 over budget)
+                </p>
+                <div className="text-[11px] text-ink-muted">
+                  Baseline stayed untouched until NudgeBee approval completed.
+                </div>
+              </div>
+
+              <div className="flex items-center justify-between text-xs text-ink-muted pt-1">
+                <span>Role privacy: Helpers see tasks only</span>
+                <button
+                  type="button"
+                  onClick={handleLoadDemo}
+                  className="font-semibold text-primary underline underline-offset-2 hover:text-primary-hover"
+                >
+                  Open live demo →
+                </button>
+              </div>
+            </Card>
           </div>
         </div>
       </header>
 
-      <main className="mx-auto max-w-[1040px] px-4 py-8 space-y-8">
+      <main className="mx-auto max-w-[1120px] px-4 py-8 space-y-10">
+        {/* 3-Card Value Section */}
+        <section id="how-it-works" className="space-y-4">
+          <div className="flex flex-wrap items-end justify-between gap-2">
+            <div>
+              <h2 className="font-display text-2xl font-bold text-ink marigold-underline">
+                Built to prevent the 3 biggest family event headaches
+              </h2>
+            </div>
+          </div>
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-3 pt-1">
+            <Card className="space-y-2 hover:border-primary/40 transition-colors">
+              <div className="flex h-10 w-10 items-center justify-center rounded-control bg-primary text-white">
+                <IndianRupee className="h-5 w-5" aria-hidden="true" />
+              </div>
+              <h3 className="font-display text-lg font-bold text-ink">
+                1. Every rupee stays visible
+              </h3>
+              <p className="text-sm text-ink-muted leading-relaxed">
+                Track Allocated, Committed, Paid, and Remaining per category with
+                deterministic code. Pending changes show the exact rupee impact
+                before anyone approves.
+              </p>
+            </Card>
+
+            <Card className="space-y-2 hover:border-primary/40 transition-colors">
+              <div className="flex h-10 w-10 items-center justify-center rounded-control bg-accent text-ink">
+                <Bot className="h-5 w-5" aria-hidden="true" />
+              </div>
+              <h3 className="font-display text-lg font-bold text-ink">
+                2. Zero WhatsApp blame
+              </h3>
+              <p className="text-sm text-ink-muted leading-relaxed">
+                Elders speak in Kannada, Hindi, or English; Sarvam AI drafts the
+                request, NudgeBee captures approval, and tasks get one clear owner.
+              </p>
+            </Card>
+
+            <Card className="space-y-2 hover:border-primary/40 transition-colors">
+              <div className="flex h-10 w-10 items-center justify-center rounded-control bg-emerald-100 text-success">
+                <HeartHandshake className="h-5 w-5" aria-hidden="true" />
+              </div>
+              <h3 className="font-display text-lg font-bold text-ink">
+                3. Venue-matched vendors &amp; zero waste
+              </h3>
+              <p className="text-sm text-ink-muted leading-relaxed">
+                Get decorator, caterer, and shop suggestions matched to your venue
+                and area, compare real quotes side by side, and coordinate surplus
+                food with nearby NGOs.
+              </p>
+            </Card>
+          </div>
+        </section>
+
+        <div id="create-event" className="scroll-mt-20 space-y-6">
         {errorMsg ? (
           <div
             role="alert"
@@ -970,6 +1152,7 @@ export default function LandingPage() {
             </div>
           </div>
         </Card>
+        </div>
       </main>
     </div>
   );

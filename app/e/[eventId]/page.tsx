@@ -5,14 +5,17 @@ import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import {
   AlertTriangle,
+  ArrowRight,
   Bot,
   Calendar,
   Check,
   CheckCircle2,
   Copy,
+  MapPin,
   Mic,
   Scale,
   ShieldAlert,
+  Sparkles,
   Store,
   Trash2,
   Users,
@@ -31,7 +34,9 @@ import {
   UsageMeter,
   useToast,
 } from "@/components/ui/primitives";
+import { PageGuide } from "@/components/ui/PageGuide";
 import { daysUntilIST, formatINR } from "@/lib/domain/budget";
+import { buildVenueSuggestions } from "@/lib/domain/suggestions";
 import { tr } from "@/lib/i18n";
 import { getActivePlanTier } from "@/lib/rate-limit";
 
@@ -52,6 +57,7 @@ export default function EventHomePage() {
     event,
     member,
     members,
+    expenses,
     tasks,
     proposals,
     activity,
@@ -169,9 +175,21 @@ export default function EventHomePage() {
               <p className="text-sm font-medium text-ink-muted">
                 Namaskara, {member.display_name}
               </p>
-              <h1 className="font-display text-2xl sm:text-3xl font-bold text-ink">
-                {event.name}
-              </h1>
+              <div className="flex flex-wrap items-center gap-2">
+                <h1 className="font-display text-2xl sm:text-3xl font-bold text-ink">
+                  {event.name}
+                </h1>
+                <PageGuide
+                  title="Event Home"
+                  summary="Your family's calm command center for budget health, urgent decisions, upcoming tasks, and venue-matched next steps."
+                  steps={[
+                    "Check the Budget ring for Allocated, Committed, Paid, and Remaining rupees (visible to Organizers & Decision Owners).",
+                    "Review 'Needs your attention' for pending NudgeBee approvals or overdue tasks.",
+                    "Use Quick Actions or Venue Suggestions below to find decorators & caterers near your venue.",
+                  ]}
+                  note="Helpers and Viewers automatically see tasks and schedules without rupee figures."
+                />
+              </div>
               <div className="mt-1 flex flex-wrap items-center gap-2 text-xs text-ink-muted">
                 <span className="inline-flex items-center gap-1">
                   <Calendar className="h-3.5 w-3.5" aria-hidden="true" />
@@ -369,6 +387,71 @@ export default function EventHomePage() {
           ) : null}
         </div>
       </section>
+
+      {/* Suggestions Based on Venue */}
+      {flags.module_vendor_finder ? (
+        (() => {
+          const bundle = buildVenueSuggestions({
+            eventType: event.type,
+            city: event.city,
+            area: event.area,
+            guestCount: event.guest_count,
+            expenseTitles: expenses.map((e) => e.title),
+          });
+          return (
+            <Card className="bg-gradient-to-br from-surface to-surface-2/50 space-y-4">
+              <div className="flex flex-wrap items-center justify-between gap-3">
+                <div>
+                  <div className="inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-primary">
+                    <Sparkles className="h-3.5 w-3.5 text-accent" aria-hidden="true" />
+                    <span>Matched to your venue &amp; area</span>
+                  </div>
+                  <h2 className="mt-0.5 font-display text-xl font-bold text-ink">
+                    Suggestions near {bundle.venueLabel}
+                  </h2>
+                </div>
+                <Link
+                  href={`/e/${eventId}/vendors${qs}`}
+                  className="inline-flex min-h-[40px] items-center gap-1.5 rounded-control border border-border bg-surface px-3.5 text-xs font-semibold text-primary hover:bg-surface-2"
+                >
+                  <span>See all vendor suggestions</span>
+                  <ArrowRight className="h-3.5 w-3.5" aria-hidden="true" />
+                </Link>
+              </div>
+
+              <div className="grid grid-cols-1 gap-3 md:grid-cols-3">
+                {bundle.suggestions.slice(0, 3).map((sug) => (
+                  <Link
+                    key={sug.category}
+                    href={`/e/${eventId}/vendors${qs}&cat=${encodeURIComponent(sug.category)}&auto=1`}
+                    className="group flex flex-col justify-between rounded-control border border-border bg-surface p-4 transition-all hover:border-primary/50 hover:shadow-sm"
+                  >
+                    <div className="space-y-1.5">
+                      <div className="flex items-center justify-between gap-2">
+                        <StatusChip label={sug.categoryLabel} tone="accent" />
+                        <span className="inline-flex items-center gap-1 text-[11px] text-ink-muted">
+                          <MapPin className="h-3 w-3" aria-hidden="true" />
+                          {sug.searchArea}
+                        </span>
+                      </div>
+                      <div className="font-semibold text-ink group-hover:text-primary">
+                        {sug.headline}
+                      </div>
+                      <p className="text-xs text-ink-muted leading-relaxed line-clamp-3">
+                        {sug.reason}
+                      </p>
+                    </div>
+                    <div className="mt-3 flex items-center gap-1 text-xs font-semibold text-primary">
+                      <span>Search {sug.categoryLabel.toLowerCase()} nearby</span>
+                      <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5" aria-hidden="true" />
+                    </div>
+                  </Link>
+                ))}
+              </div>
+            </Card>
+          );
+        })()
+      ) : null}
 
       {/* Needs Your Attention + Next 5 Tasks */}
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">

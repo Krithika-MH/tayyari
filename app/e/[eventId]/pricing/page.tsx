@@ -12,6 +12,7 @@ import {
   StatusChip,
   useToast,
 } from "@/components/ui/primitives";
+import { PageGuide } from "@/components/ui/PageGuide";
 import { formatINR } from "@/lib/domain/budget";
 
 export default function PricingPage() {
@@ -142,10 +143,22 @@ export default function PricingPage() {
             </span>
           ) : null}
         </div>
-        <h1 className="font-display text-2xl sm:text-4xl font-bold text-ink max-w-3xl leading-tight">
-          Plan your event like you hired a planner. Pay only for the weeks you
-          need.
-        </h1>
+        <div className="flex flex-wrap items-center gap-3">
+          <h1 className="font-display text-2xl sm:text-4xl font-bold text-ink max-w-3xl leading-tight">
+            Plan your event like you hired a planner. Pay only for the weeks you
+            need.
+          </h1>
+          <PageGuide
+            title="Pricing & Event Pass"
+            summary="Compare Free vs 30-day and 60-day Event Passes — all allowances are served live from Flagsmith remote config."
+            steps={[
+              "Toggle between 30-day and 60-day pass durations based on your event timeline.",
+              "Click 'Activate pass' (Organizer only) to test Flagsmith trait switching — no payment is taken.",
+              "Core safety, budget tracking, NudgeBee approvals, and run-sheet sharing always stay free.",
+            ]}
+            note="Prices shown are illustrative test prices only."
+          />
+        </div>
         <p className="text-sm text-ink-muted max-w-2xl">
           One pass covers your whole household room. Switch between 30-day and
           60-day pass options below — allowances update live from Flagsmith.

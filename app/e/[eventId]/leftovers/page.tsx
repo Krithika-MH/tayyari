@@ -26,6 +26,7 @@ import {
   StatusChip,
   useToast,
 } from "@/components/ui/primitives";
+import { PageGuide } from "@/components/ui/PageGuide";
 
 const SAFETY_BANNER =
   "Plan who will help before guests leave. An organisation must confirm it can collect and judge safety. This app does not certify any food as safe.";
@@ -324,9 +325,21 @@ export default function LeftoversPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="font-display text-2xl font-bold text-ink marigold-underline">
-          Leftover Food &amp; NGO Outreach
-        </h1>
+        <div className="flex flex-wrap items-center gap-2">
+          <h1 className="font-display text-2xl font-bold text-ink marigold-underline">
+            Leftover Food &amp; NGO Outreach
+          </h1>
+          <PageGuide
+            title="Leftover Food & NGO Outreach"
+            summary="Coordinate surplus food responsibly: log dishes, find nearby food organisations, get NudgeBee approval, and record real pickup outcomes."
+            steps={[
+              "Search nearby food collection groups or shelters (all marked unverified until contacted).",
+              "Log food type, portions, serving time, and pickup spot — leave unknown details as 'unknown'.",
+              "Request NudgeBee approval first; once approved, call or message the NGO and record whether food was accepted/collected.",
+            ]}
+            note="Tayyari does not certify food safety or guarantee NGO pickup."
+          />
+        </div>
         <p className="mt-2 text-sm text-ink-muted">
           Coordinate surplus food thoughtfully with family approval before
           contacting any local food organisation.

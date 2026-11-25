@@ -1,6 +1,7 @@
 "use client";
 
-import React, { useCallback, useEffect, useMemo, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useSearchParams } from "next/navigation";
 import {
   Bookmark,
   BookmarkCheck,
@@ -12,6 +13,7 @@ import {
   Phone,
   Plus,
   Search,
+  Sparkles,
   Star,
   Store,
 } from "lucide-react";
@@ -24,6 +26,7 @@ import {
   type VendorRecord,
 } from "@/lib/contracts";
 import { formatINR } from "@/lib/domain/budget";
+import { buildVenueSuggestions } from "@/lib/domain/suggestions";
 import { useEventContext } from "@/components/shell/EventContext";
 import {
   Button,
@@ -34,6 +37,7 @@ import {
   StatusChip,
   useToast,
 } from "@/components/ui/primitives";
+import { PageGuide } from "@/components/ui/PageGuide";
 
 const CATEGORY_LABELS: Record<VendorCategory, string> = {
   caterers: "Caterers",
@@ -52,18 +56,21 @@ type SanitizedQuote = Omit<QuoteRecord, "amount_inr"> & {
 };
 
 export default function VendorsPage() {
+  const searchParams = useSearchParams();
   const {
     eventId,
     token,
     event,
     member,
     categories,
+    expenses,
     flags,
     lang,
     loading,
     refreshEvent,
   } = useEventContext();
   const { pushToast } = useToast();
+  const autoSearchDoneRef = useRef(false);
 
   const [activeTab, setActiveTab] = useState<"find" | "shortlist">("find");
   const [selectedCategory, setSelectedCategory] =
@@ -153,18 +160,24 @@ export default function VendorsPage() {
     [shortlistedVendors]
   );
 
-  async function runVendorSearch(cat: VendorCategory = selectedCategory) {
+  async function runVendorSearch(
+    cat: VendorCategory = selectedCategory,
+    areaOverride?: string,
+    queryOverride?: string
+  ) {
     if (!moduleEnabled) return;
     setSearching(true);
     setSearchError(null);
+    const targetArea = areaOverride ?? (areaQuery.trim() || event?.area || "");
+    if (areaOverride) setAreaQuery(areaOverride);
     try {
       const res = await fetch(`/api/vendors/search?${authQuery}`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          query: CATEGORY_LABELS[cat],
+          query: queryOverride ?? CATEGORY_LABELS[cat],
           category: cat,
-          area: areaQuery.trim() || event?.area || "",
+          area: targetArea,
           ...(coords ? { lat: coords.lat, lng: coords.lng } : {}),
         }),
       });
@@ -348,15 +361,23 @@ export default function VendorsPage() {
     }
   }
 
-  async function handleFetchIdeas() {
+  async function handleFetchIdeas(
+    overrideCategory?: string,
+    overrideVibe?: string
+  ) {
+    const catToSend = overrideCategory ?? ideasCategory;
+    const vibeToSend = overrideVibe ?? ideasVibe;
+    if (overrideCategory) setIdeasCategory(overrideCategory);
+    if (overrideVibe) setIdeasVibe(overrideVibe);
     setLoadingIdeas(true);
     try {
       const res = await fetch(`/api/ideas?${authQuery}`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          category: ideasCategory,
-          vibe: ideasVibe,
+          category: catToSend,
+          vibe: vibeToSend,
+          venueContext: venueBundle?.venueLabel,
           language: lang,
         }),
       });
@@ -392,6 +413,32 @@ export default function VendorsPage() {
     return map;
   }, [quotes]);
 
+  const venueBundle = useMemo(() => {
+    if (!event) return null;
+    return buildVenueSuggestions({
+      eventType: event.type,
+      city: event.city,
+      area: event.area,
+      guestCount: event.guest_count,
+      shortlistedVendors: vendors,
+      expenseTitles: expenses.map((e) => e.title),
+    });
+  }, [event, vendors, expenses]);
+
+  useEffect(() => {
+    if (autoSearchDoneRef.current || !event || !moduleEnabled) return;
+    const catParam = searchParams.get("cat") as VendorCategory | null;
+    const autoParam = searchParams.get("auto");
+    if (catParam && VENDOR_CATEGORIES.includes(catParam)) {
+      setSelectedCategory(catParam);
+      if (autoParam === "1") {
+        autoSearchDoneRef.current = true;
+        void runVendorSearch(catParam, venueBundle?.searchArea ?? event.area);
+      }
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [event, moduleEnabled, searchParams]);
+
   const cheapestAmount = useMemo(() => {
     if (!member?.can_see_amounts) return null;
     const amounts = shortlistedVendors
@@ -415,9 +462,21 @@ export default function VendorsPage() {
     <div className="space-y-6">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
-          <h1 className="font-display text-2xl font-bold text-ink marigold-underline">
-            Vendors &amp; Quotes
-          </h1>
+          <div className="flex flex-wrap items-center gap-2">
+            <h1 className="font-display text-2xl font-bold text-ink marigold-underline">
+              Vendors &amp; Quotes
+            </h1>
+            <PageGuide
+              title="Vendors & Quotes"
+              summary="Get suggestions tailored to your venue, discover real local shops & decorators via Google Places, shortlist favorites, and compare written quotes."
+              steps={[
+                "Review 'Suggestions based on your venue' to see recommended categories and questions to ask decorators or caterers.",
+                "Pick any category chip or click 'Find nearby' to search Google Places around your venue.",
+                "Save shortlisted vendors, enter real written quotes you collect, and compare them side by side (cheapest highlighted).",
+              ]}
+              note="Tayyari never guesses prices — search results never show synthetic prices until you enter a real quote."
+            />
+          </div>
           <p className="mt-2 text-sm text-ink-muted">
             Search nearby vendors in {event?.city}, save your shortlist, and
             compare real written quotes side by side.
@@ -462,6 +521,92 @@ export default function VendorsPage() {
 
       {activeTab === "find" && moduleEnabled ? (
         <div className="space-y-5">
+          {/* Venue-based Suggestions Panel */}
+          {venueBundle ? (
+            <Card className="bg-gradient-to-br from-surface via-surface to-surface-2/60 space-y-4">
+              <div className="flex flex-wrap items-center justify-between gap-2">
+                <div>
+                  <div className="inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-primary">
+                    <Sparkles className="h-3.5 w-3.5 text-accent" aria-hidden="true" />
+                    <span>
+                      {venueBundle.venueSource === "shortlist"
+                        ? "Based on your shortlisted venue"
+                        : venueBundle.venueSource === "expense"
+                        ? "Based on your booked venue"
+                        : "Based on your event area & guest count"}
+                    </span>
+                  </div>
+                  <h2 className="mt-0.5 font-display text-lg font-bold text-ink">
+                    Suggestions for {venueBundle.venueLabel}
+                  </h2>
+                </div>
+                <StatusChip label="Curated checklist — no fake quotes" tone="info" />
+              </div>
+
+              <div className="grid grid-cols-1 gap-3 md:grid-cols-2 lg:grid-cols-3">
+                {venueBundle.suggestions.map((sug) => (
+                  <div
+                    key={sug.category}
+                    className="flex flex-col justify-between rounded-control border border-border bg-surface p-4 space-y-3"
+                  >
+                    <div className="space-y-1.5">
+                      <div className="flex items-center justify-between gap-2">
+                        <StatusChip label={sug.categoryLabel} tone="accent" />
+                        <span className="text-[11px] font-medium text-ink-muted">
+                          Near {sug.searchArea}
+                        </span>
+                      </div>
+                      <h3 className="font-semibold text-ink">{sug.headline}</h3>
+                      <p className="text-xs text-ink-muted leading-relaxed">
+                        {sug.reason}
+                      </p>
+                      <ul className="space-y-1 pt-1 text-[11px] text-ink-muted">
+                        {sug.questionsToAsk.map((q, idx) => (
+                          <li key={idx} className="flex items-start gap-1.5">
+                            <span className="text-primary font-bold">•</span>
+                            <span>{q}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+
+                    <div className="flex flex-wrap gap-2 pt-1">
+                      <Button
+                        type="button"
+                        size="sm"
+                        variant="primary"
+                        className="flex-1 min-h-[40px]"
+                        onClick={() => {
+                          setSelectedCategory(sug.category);
+                          void runVendorSearch(
+                            sug.category,
+                            sug.searchArea,
+                            sug.searchQuery
+                          );
+                        }}
+                      >
+                        <Search className="h-3.5 w-3.5" aria-hidden="true" />
+                        <span>Find {sug.categoryLabel.toLowerCase()}</span>
+                      </Button>
+                      <Button
+                        type="button"
+                        size="sm"
+                        variant="secondary"
+                        className="min-h-[40px]"
+                        onClick={() => {
+                          void handleFetchIdeas(sug.categoryLabel, sug.vibeForIdeas);
+                        }}
+                      >
+                        <Lightbulb className="h-3.5 w-3.5 text-accent" aria-hidden="true" />
+                        <span>AI ideas</span>
+                      </Button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </Card>
+          ) : null}
+
           {/* Category chip row */}
           <div className="flex flex-wrap gap-2" role="group" aria-label="Vendor categories">
             {VENDOR_CATEGORIES.map((cat) => (

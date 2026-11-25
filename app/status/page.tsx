@@ -19,6 +19,7 @@ import {
   StatusChip,
   type ChipTone,
 } from "@/components/ui/primitives";
+import { PageGuide } from "@/components/ui/PageGuide";
 
 type HealthStatus = "green" | "amber" | "red";
 
@@ -130,9 +131,21 @@ export default function StatusPage() {
                 Back to Tayyari
               </Link>
             </div>
-            <h1 className="marigold-underline font-display text-2xl font-bold text-ink sm:text-3xl">
-              Integration Status
-            </h1>
+            <div className="flex flex-wrap items-center gap-2">
+              <h1 className="marigold-underline font-display text-2xl font-bold text-ink sm:text-3xl">
+                Integration Status
+              </h1>
+              <PageGuide
+                title="Integration Status"
+                summary="Live server-side health checks for Supabase, Sarvam AI, Flagsmith, NudgeBee, and Google Places."
+                steps={[
+                  "Green means configured and responding normally.",
+                  "Amber means an optional key is missing and safe fallback mode is active.",
+                  "Click 'Refresh checks' anytime after updating environment variables.",
+                ]}
+                note="NudgeBee check verifies configuration only and never triggers an approval run."
+              />
+            </div>
             <p className="pt-1 text-sm text-ink-muted">
               Live server-side checks for Tayyari&apos;s connected services. No
               secrets are exposed and no approval workflows are triggered.

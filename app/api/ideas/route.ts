@@ -6,7 +6,8 @@ import { sarvamLlmProvider } from "@/lib/providers/sarvam";
 
 const IdeasSchema = z.object({
   category: z.string().trim().min(1).max(60),
-  vibe: z.string().trim().min(1).max(120),
+  vibe: z.string().trim().min(1).max(160),
+  venueContext: z.string().trim().max(160).optional(),
   language: z.enum(LANGUAGES).optional(),
 });
 
@@ -37,12 +38,16 @@ export async function POST(req: NextRequest) {
     );
   }
 
+  const enrichedVibe = parsed.data.venueContext
+    ? `${parsed.data.vibe} (Venue: ${parsed.data.venueContext}, Guests: ${ctx.event.guest_count}, City: ${ctx.event.city})`
+    : `${parsed.data.vibe} (Guests: ${ctx.event.guest_count}, City: ${ctx.event.city})`;
+
   let ideas: string[];
   try {
     ideas = await sarvamLlmProvider.festiveIdeas({
       eventType: ctx.event.type,
       category: parsed.data.category,
-      vibe: parsed.data.vibe,
+      vibe: enrichedVibe,
       language: parsed.data.language ?? ctx.member.preferred_language,
     });
   } catch {
