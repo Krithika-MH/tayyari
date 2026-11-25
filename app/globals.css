@@ -1,0 +1,89 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --font-fraunces: "Fraunces";
+  --font-noto-sans: "Noto Sans";
+  --font-noto-kannada: "Noto Sans Kannada";
+  --font-noto-devanagari: "Noto Sans Devanagari";
+  --bg: #FFF9F0;
+  --surface: #FFFFFF;
+  --surface-2: #FDF1DC;
+  --ink: #2A2118;
+  --ink-muted: #6B5D4D;
+  --primary: #0F5C5C;
+  --primary-hover: #0B4A4A;
+  --accent: #F2A81D;
+  --accent-soft: #FFE8B3;
+  --border: #EADFCB;
+  --success: #1F7A4D;
+  --warning: #B7791F;
+  --danger: #B42318;
+  --info: #1D4ED8;
+}
+
+html,
+body {
+  background-color: var(--bg);
+  color: var(--ink);
+  font-size: 16px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+
+.tabular-nums {
+  font-variant-numeric: tabular-nums;
+}
+
+.indic-leading {
+  line-height: 1.65;
+}
+
+/* Kolam-inspired subtle dot-grid SVG background at 6% opacity */
+.kolam-pattern {
+  background-image: url("data:image/svg+xml,%3Csvg width='36' height='36' viewBox='0 0 36 36' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%232A2118' fill-opacity='0.06'%3E%3Ccircle cx='18' cy='18' r='1.5'/%3E%3Ccircle cx='6' cy='6' r='1'/%3E%3Ccircle cx='30' cy='6' r='1'/%3E%3Ccircle cx='6' cy='30' r='1'/%3E%3Ccircle cx='30' cy='30' r='1'/%3E%3Cpath d='M18 8c5.5 0 10 4.5 10 10s-4.5 10-10 10-10-4.5-10-10 4.5-10 10-10z' fill='none' stroke='%230F5C5C' stroke-opacity='0.06' stroke-width='1'/%3E%3C/g%3E%3C/svg%3E");
+}
+
+/* Marigold underline accent on section titles */
+.marigold-underline {
+  position: relative;
+  display: inline-block;
+}
+.marigold-underline::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: -4px;
+  width: 48px;
+  height: 3px;
+  border-radius: 999px;
+  background-color: var(--accent);
+}
+
+/* Accessible 3px teal focus ring */
+*:focus-visible {
+  outline: 3px solid var(--primary);
+  outline-offset: 2px;
+}
+
+@media print {
+  .no-print {
+    display: none !important;
+  }
+  body {
+    background: #ffffff;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
