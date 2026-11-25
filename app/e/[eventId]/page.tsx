@@ -165,7 +165,7 @@ export default function EventHomePage() {
       ) : null}
 
       {/* Kolam Header Card */}
-      <Card className="kolam-pattern overflow-hidden">
+      <Card className="kolam-pattern">
         <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <div className="flex items-start gap-4">
             <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-card bg-surface border border-border">

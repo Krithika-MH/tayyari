@@ -90,8 +90,10 @@ export function PageGuide({
           role="dialog"
           aria-label={`${title} guide`}
           className={clsx(
-            "fixed left-4 right-4 top-20 z-50 rounded-card border border-border bg-surface p-4 text-left shadow-soft sm:absolute sm:top-full sm:mt-2 sm:w-80 sm:left-auto sm:right-auto",
-            align === "right" ? "sm:right-0" : "sm:left-0"
+            "fixed left-4 right-4 top-20 z-50 rounded-card border border-border bg-surface p-4 text-left shadow-soft sm:absolute sm:top-full sm:mt-2 sm:w-80",
+            align === "right"
+              ? "sm:right-0 sm:left-auto"
+              : "sm:left-0 sm:right-auto"
           )}
         >
           <div className="flex items-start justify-between gap-2">

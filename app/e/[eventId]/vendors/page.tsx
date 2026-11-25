@@ -575,7 +575,7 @@ export default function VendorsPage() {
                         type="button"
                         size="sm"
                         variant="primary"
-                        className="flex-1 min-h-[40px]"
+                        className="flex-1 min-h-[40px] whitespace-nowrap"
                         onClick={() => {
                           setSelectedCategory(sug.category);
                           void runVendorSearch(
