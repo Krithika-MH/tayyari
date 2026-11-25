@@ -137,18 +137,13 @@ npm run build
 
 ---
 
-## Deployment (Firebase App Hosting / Vercel)
+## Deployment (Vercel)
 
 Because Tayyari uses Next.js 15 server route handlers to keep API keys and `CALLBACK_SECRET` off the client, deploy using a Node.js SSR target:
 
-- **Firebase App Hosting**: `apphosting.yaml` and `firebase.json` are included. Connect your GitHub repo or run `firebase deploy` with Blaze billing enabled and configure runtime secrets in Firebase App Hosting / Secret Manager.
+
 - **Vercel**: Import the GitHub repo, set all environment variables from `.env.example`, and copy the resulting `https://...` URL to `PUBLIC_BASE_URL`.
 
 ---
 
-## Known Honest Limits
 
-1. **No live vendor prices**: Google Places returns real operational business listings; prices come strictly from quotes typed by the family.
-2. **Unverified NGO listings**: Food donation listings carry *"Unverified listing. Contact to confirm they can accept food today."* Tayyari never certifies food safety or NGO acceptance.
-3. **Pricing numbers are unvalidated test figures**: The Free / ₹299 / ₹499 Event Pass page is a demo activation flow without real payment collection.
-4. **NudgeBee approver identity**: The NudgeBee workflow owner approves in NudgeBee on the named family decision owner's behalf, displayed honestly as *"Approved in NudgeBee workflow"*.
