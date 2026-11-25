@@ -134,7 +134,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
       show: flags.module_leftover_food,
     },
     { href: `${base}/pricing${qs}`, matchPath: `${base}/pricing`, label: tr(lang, "navPricing"), icon: CreditCard, show: true },
-    { href: `/status`, matchPath: `/status`, label: tr(lang, "navStatus"), icon: Activity, show: true },
+    { href: `/status?returnTo=${encodeURIComponent(`${base}${qs}`)}`, matchPath: `/status`, label: tr(lang, "navStatus"), icon: Activity, show: true },
   ].filter((item) => item.show);
 
   const allNav = [...primaryNav, ...secondaryNav];

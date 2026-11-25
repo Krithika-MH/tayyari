@@ -79,6 +79,16 @@ export default function StatusPage() {
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
+  const [returnHref, setReturnHref] = useState("/");
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const rt = new URLSearchParams(window.location.search).get("returnTo");
+      if (rt && rt.startsWith("/")) {
+        setReturnHref(rt);
+      }
+    }
+  }, []);
 
   const loadHealth = useCallback(async (isRefresh = false) => {
     if (isRefresh) {
@@ -124,11 +134,11 @@ export default function StatusPage() {
           <div className="space-y-2">
             <div>
               <Link
-                href="/"
+                href={returnHref}
                 className="inline-flex items-center gap-1.5 text-sm font-semibold text-primary hover:text-primary-hover"
               >
                 <ArrowLeft className="h-4 w-4" aria-hidden="true" />
-                Back to Tayyari
+                {returnHref === "/" ? "Back to Tayyari" : "Back to Event Room"}
               </Link>
             </div>
             <div className="flex flex-wrap items-center gap-2">
